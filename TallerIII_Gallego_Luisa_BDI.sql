@@ -109,3 +109,14 @@ INSERT INTO ubicacion_bodega (codigo_pasillo, zona) VALUES ('Pasillo A1', 'Bodeg
 USE ferreteria;
 INSERT INTO producto (nombre, unidad_medida, precio_unitario, cantidad_stock, id_categoria, id_proveedor, id_marca, id_ubicacion) 
 VALUES ('Martillo', 'Unidad', 25000.00, 50.00, 1, 1, 1, 1);
+
+USE ferreteria;
+INSERT INTO producto (nombre, unidad_medida, precio_unitario, cantidad_stock, id_categoria, id_proveedor, id_marca, id_ubicacion) 
+VALUES ('Destornillador', 'Unidad', -5000.00, 10.00, 1, 1, 1, 1);
+
+USE ferreteria;
+INSERT INTO categoria (nombre, descripcion) VALUES ('Herramientas Manuales', 'Otra descripcion diferente');
+
+USE ferreteria;
+INSERT INTO producto (nombre, unidad_medida, precio_unitario, cantidad_stock, id_categoria, id_proveedor, id_marca, id_ubicacion) 
+VALUES ('Taladro Percutor', 'Unidad', 180000.00, 15.00, 999, 1, 1, 1);
