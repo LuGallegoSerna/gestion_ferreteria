@@ -1,6 +1,8 @@
 CREATE DATABASE ferreteria;
 USE ferreteria;
 
+
+
 -- 1. TABLAS MAESTRAS
 
 CREATE TABLE proveedor (
