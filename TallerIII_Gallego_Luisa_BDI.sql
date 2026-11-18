@@ -206,26 +206,31 @@ INSERT INTO cliente (nombre, cedula_nit, telefono, direccion, correo_electronico
 ('Taller Metalico El Yunque', '901901234-8', '3165567824', 'Barrio El Bosque Cll 15 #28-44', 'elyunque@taller.co'),
 ('Valentina Duque Herrera', '1053789025', '3175567825', 'Barrio Los Rosales Cra 24 #55-10', 'valen.duque@gmail.com');
 
+USE ferreteria;
+
+-- Asegurar que los nuevos productos continuen exactamente desde el ID 2
+ALTER TABLE producto AUTO_INCREMENT = 2;
+
 -- 7. PRODUCTOS
 INSERT INTO producto (nombre, unidad_medida, precio_unitario, cantidad_stock, id_categoria, id_proveedor, id_marca, id_ubicacion) VALUES
-('Taladro Percutor 1/2 Pulgada', 'Unidad', 320000.00, 3.00, 2, 9, 2, 2),
-('Pulidora Angular 4-1/2', 'Unidad', 285000.00, 12.00, 2, 9, 3, 2),
-('Cemento Gris Uso General 50kg', 'Bulto', 34500.00, 4.00, 3, 3, 6, 3),
-('Cable Encauchetado 3x12 AWG', 'Metro', 9800.00, 150.50, 6, 6, 7, 7),
-('Vinilo Tipo 1 Blanco Galon', 'Galon', 68000.00, 25.00, 4, 4, 4, 9),
-('Tubo PVC Sanitario 4 Pulgadas x 6m', 'Unidad', 42000.00, 30.00, 5, 5, 5, 8),
-('Puntilla con Cabeza 2 Pulgadas', 'Kilogramo', 12500.00, 45.75, 7, 7, 7, 5),
-('Casco de Seguridad Industrial', 'Unidad', 28000.00, 40.00, 8, 8, 8, 10),
-('Sierra Circular 7-1/4 Pulgadas', 'Unidad', 410000.00, 2.00, 2, 9, 9, 2),
-('Impermeabilizante SikaFill 5 anos', 'Galon', 95000.00, 18.00, 4, 4, 10, 9),
+('Taladro Percutor 1/2 Pulgada', 'Unidad', 320000.00, 3.00, 3, 9, 2, 2),
+('Pulidora Angular 4-1/2', 'Unidad', 285000.00, 12.00, 3, 9, 3, 2),
+('Cemento Gris Uso General 50kg', 'Bulto', 34500.00, 4.00, 4, 3, 6, 3),
+('Cable Encauchetado 3x12 AWG', 'Metro', 9800.00, 150.50, 7, 6, 7, 7),
+('Vinilo Tipo 1 Blanco Galon', 'Galon', 68000.00, 25.00, 5, 4, 4, 9),
+('Tubo PVC Sanitario 4 Pulgadas x 6m', 'Unidad', 42000.00, 30.00, 6, 5, 5, 8),
+('Puntilla con Cabeza 2 Pulgadas', 'Kilogramo', 12500.00, 45.75, 8, 7, 7, 5),
+('Casco de Seguridad Industrial', 'Unidad', 28000.00, 40.00, 9, 8, 8, 10),
+('Sierra Circular 7-1/4 Pulgadas', 'Unidad', 410000.00, 2.00, 3, 9, 9, 2),
+('Impermeabilizante SikaFill 5 anos', 'Galon', 95000.00, 18.00, 5, 4, 10, 9),
 ('Juego de Destornilladores x 6', 'Juego', 48000.00, 22.00, 1, 2, 1, 1),
 ('Llave Inglesa Ajustable 10 Pulgadas', 'Unidad', 36000.00, 15.00, 1, 2, 7, 1),
-('Toma Doble con Polo a Tierra', 'Unidad', 8500.00, 80.00, 6, 6, 3, 7),
-('Guantes de Nitrilo Reforzados', 'Par', 11000.00, 60.00, 8, 8, 8, 10),
-('Tornillo Drywall 1 Pulgada', 'Kilogramo', 18000.00, 3.50, 7, 7, 7, 5),
-('Codo PVC Presion 1/2 Pulgada', 'Unidad', 1500.00, 200.00, 5, 5, 5, 8),
-('Alambre Dulce Calibre 18', 'Kilogramo', 14000.00, 35.20, 3, 3, 1, 4),
-('Brocha Cerda Natural 3 Pulgadas', 'Unidad', 16500.00, 4.00, 4, 4, 4, 6),
+('Toma Doble con Polo a Tierra', 'Unidad', 8500.00, 80.00, 7, 6, 3, 7),
+('Guantes de Nitrilo Reforzados', 'Par', 11000.00, 60.00, 9, 8, 8, 10),
+('Tornillo Drywall 1 Pulgada', 'Kilogramo', 18000.00, 3.50, 8, 7, 7, 5),
+('Codo PVC Presion 1/2 Pulgada', 'Unidad', 1500.00, 200.00, 6, 5, 5, 8),
+('Alambre Dulce Calibre 18', 'Kilogramo', 14000.00, 35.20, 4, 3, 1, 4),
+('Brocha Cerda Natural 3 Pulgadas', 'Unidad', 16500.00, 4.00, 5, 4, 4, 6),
 ('Flexometro Cinta Metrica 5m', 'Unidad', 22000.00, 28.00, 1, 1, 1, 6);
 
 -- 8. SUMINISTROS
@@ -337,7 +342,7 @@ INSERT INTO detalle_venta (cantidad, precio_unitario_venta, id_venta, id_product
 (5.00, 34500.00, 27, 4),
 (2.00, 25000.00, 31, 1);
 
--- 11. ACTUALIZAR EL TOTAL DE CADA VENTA
+-- 11. ACTUALIZAR AUTOMATICAMENTE EL TOTAL DE CADA VENTA
 UPDATE venta v
 SET total_venta = (
     SELECT SUM(d.cantidad * d.precio_unitario_venta)
