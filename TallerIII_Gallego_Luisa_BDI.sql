@@ -350,3 +350,20 @@ SET total_venta = (
     WHERE d.id_venta = v.id_venta
 )
 WHERE v.id_venta > 0;
+
+USE ferreteria;
+UPDATE producto
+SET cantidad_stock = cantidad_stock + 10.00,
+    precio_unitario = 330000.00
+WHERE id_producto = 2;
+
+USE ferreteria;
+UPDATE categoria
+SET descripcion = 'Sin descripcion asignada'
+WHERE descripcion IS NULL AND id_categoria > 0;
+
+USE ferreteria;
+SELECT id_producto, nombre, unidad_medida, cantidad_stock
+FROM producto
+WHERE cantidad_stock < 5
+ORDER BY cantidad_stock ASC;
