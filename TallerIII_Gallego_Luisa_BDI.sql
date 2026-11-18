@@ -466,3 +466,54 @@ INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
 GROUP BY c.id_cliente, c.nombre
 ORDER BY total_unidades DESC
 LIMIT 3;
+
+USE ferreteria;
+SELECT mp.nombre AS metodo_pago, SUM(v.total_venta) AS ingreso_total
+FROM metodo_pago mp
+INNER JOIN venta v ON mp.id_metodo_pago = v.id_metodo_pago
+GROUP BY mp.id_metodo_pago, mp.nombre
+ORDER BY ingreso_total DESC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, COUNT(DISTINCT dv.id_producto) AS productos_diferentes
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+GROUP BY c.id_cliente, c.nombre
+HAVING COUNT(DISTINCT dv.id_producto) > 1
+ORDER BY productos_diferentes DESC;
+
+USE ferreteria;
+SELECT id_producto, nombre, precio_unitario
+FROM producto
+WHERE precio_unitario > (
+    SELECT AVG(precio_unitario)
+    FROM producto
+)
+ORDER BY precio_unitario DESC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, v.id_venta, v.fecha, v.total_venta
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+WHERE v.total_venta = (
+    SELECT MAX(total_venta)
+    FROM venta
+);
+
+USE ferreteria;
+SELECT id_producto, nombre, precio_unitario, cantidad_stock
+FROM producto
+WHERE id_producto NOT IN (
+    SELECT DISTINCT id_producto
+    FROM detalle_venta
+);
+
+USE ferreteria;
+SELECT v.id_venta, v.fecha, v.total_venta, v.id_cliente
+FROM venta v
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM detalle_venta dv
+    WHERE dv.id_venta = v.id_venta
+);
