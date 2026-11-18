@@ -367,3 +367,102 @@ SELECT id_producto, nombre, unidad_medida, cantidad_stock
 FROM producto
 WHERE cantidad_stock < 5
 ORDER BY cantidad_stock ASC;
+
+USE ferreteria;
+DELETE FROM venta
+WHERE id_venta = 35;
+
+USE ferreteria;
+SELECT id_producto, nombre, unidad_medida, precio_unitario, cantidad_stock
+FROM producto
+WHERE cantidad_stock > 0
+ORDER BY nombre ASC;
+
+USE ferreteria;
+SELECT id_venta, fecha, total_venta, id_cliente, id_metodo_pago
+FROM venta
+WHERE fecha BETWEEN '2026-11-01 00:00:00' AND '2026-11-30 23:59:59'
+ORDER BY fecha DESC;
+
+USE ferreteria;
+SELECT DISTINCT c.id_cliente, c.nombre AS cliente, cat.nombre AS categoria
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+INNER JOIN producto p ON dv.id_producto = p.id_producto
+INNER JOIN categoria cat ON p.id_categoria = cat.id_categoria
+WHERE cat.nombre = 'Herramientas Manuales'
+ORDER BY c.nombre ASC;
+
+USE ferreteria;
+SELECT DISTINCT c.id_cliente, c.nombre AS cliente, m.nombre AS marca, m.pais
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+INNER JOIN producto p ON dv.id_producto = p.id_producto
+INNER JOIN marca m ON p.id_marca = m.id_marca
+WHERE m.pais = 'Colombia'
+ORDER BY c.nombre ASC;
+
+USE ferreteria;
+SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes, SUM(total_venta) AS ingresos_totales
+FROM venta
+GROUP BY DATE_FORMAT(fecha, '%Y-%m')
+ORDER BY mes ASC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, COUNT(v.id_venta) AS total_ventas
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+GROUP BY c.id_cliente, c.nombre
+ORDER BY total_ventas DESC, c.nombre ASC;
+
+USE ferreteria;
+SELECT p.id_producto, p.nombre AS producto, SUM(dv.cantidad) AS total_unidades_vendidas
+FROM producto p
+INNER JOIN detalle_venta dv ON p.id_producto = dv.id_producto
+GROUP BY p.id_producto, p.nombre
+HAVING SUM(dv.cantidad) > 5
+ORDER BY total_unidades_vendidas DESC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, SUM(v.total_venta) AS gasto_total
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+GROUP BY c.id_cliente, c.nombre
+ORDER BY gasto_total DESC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, COUNT(DISTINCT v.id_metodo_pago) AS metodos_usados
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+GROUP BY c.id_cliente, c.nombre
+HAVING COUNT(DISTINCT v.id_metodo_pago) > 1
+ORDER BY metodos_usados DESC;
+
+USE ferreteria;
+SELECT cat.nombre AS categoria, ROUND(AVG(dv.cantidad), 2) AS promedio_unidades
+FROM categoria cat
+INNER JOIN producto p ON cat.id_categoria = p.id_categoria
+INNER JOIN detalle_venta dv ON p.id_producto = dv.id_producto
+GROUP BY cat.id_categoria, cat.nombre
+ORDER BY promedio_unidades DESC;
+
+USE ferreteria;
+SELECT cat.nombre AS categoria,
+       COUNT(dv.id_detalle) AS total_ventas,
+       SUM(dv.cantidad * dv.precio_unitario_venta) AS monto_total
+FROM categoria cat
+INNER JOIN producto p ON cat.id_categoria = p.id_categoria
+INNER JOIN detalle_venta dv ON p.id_producto = dv.id_producto
+GROUP BY cat.id_categoria, cat.nombre
+ORDER BY monto_total DESC;
+
+USE ferreteria;
+SELECT c.id_cliente, c.nombre AS cliente, SUM(dv.cantidad) AS total_unidades
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+GROUP BY c.id_cliente, c.nombre
+ORDER BY total_unidades DESC
+LIMIT 3;
