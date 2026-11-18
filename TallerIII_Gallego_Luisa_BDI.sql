@@ -95,3 +95,17 @@ CREATE TABLE detalle_venta (
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto) ON DELETE RESTRICT
 );
+
+USE ferreteria;
+INSERT INTO marca (nombre, pais) VALUES ('Stanley', 'Estados Unidos');
+
+USE ferreteria;
+INSERT INTO categoria (nombre, descripcion) VALUES ('Herramientas Manuales', 'Herramientas de operacion manual');
+
+
+INSERT INTO proveedor (nombre, cedula_nit, telefono, direccion, correo_electronico) VALUES ('Herragro', '800123456-7', '6068889999', 'Zona Industrial', 'ventas@herragro.com');
+INSERT INTO ubicacion_bodega (codigo_pasillo, zona) VALUES ('Pasillo A1', 'Bodega Principal');
+
+USE ferreteria;
+INSERT INTO producto (nombre, unidad_medida, precio_unitario, cantidad_stock, id_categoria, id_proveedor, id_marca, id_ubicacion) 
+VALUES ('Martillo', 'Unidad', 25000.00, 50.00, 1, 1, 1, 1);
