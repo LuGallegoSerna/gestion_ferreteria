@@ -531,3 +531,63 @@ WHERE dv.precio_unitario_venta = (
     WHERE v2.id_cliente = c.id_cliente
 )
 ORDER BY dv.precio_unitario_venta DESC;
+
+
+USE ferreteria;
+CREATE OR REPLACE VIEW vw_detalle_ventas_ferreteria AS
+SELECT v.id_venta,
+       v.fecha,
+       c.nombre AS cliente,
+       p.nombre AS producto,
+       dv.cantidad,
+       dv.precio_unitario_venta,
+       (dv.cantidad * dv.precio_unitario_venta) AS subtotal,
+       mp.nombre AS metodo_pago
+FROM venta v
+INNER JOIN cliente c ON v.id_cliente = c.id_cliente
+INNER JOIN metodo_pago mp ON v.id_metodo_pago = mp.id_metodo_pago
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+INNER JOIN producto p ON dv.id_producto = p.id_producto;
+-- Consultar la vista para verificar resultados
+SELECT * FROM vw_detalle_ventas_ferreteria ORDER BY id_venta DESC;
+
+USE ferreteria;
+CREATE OR REPLACE VIEW vw_ingresos_mensuales AS
+SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes,
+       COUNT(id_venta) AS cantidad_facturas,
+       SUM(total_venta) AS ingresos_totales_cop
+FROM venta
+GROUP BY DATE_FORMAT(fecha, '%Y-%m');
+
+-- Consultar la vista para verificar resultados
+SELECT * FROM vw_ingresos_mensuales ORDER BY mes ASC;
+
+USE ferreteria;
+BEGIN;
+-- 1. Insertar cabecera de la venta
+INSERT INTO venta (fecha, total_venta, id_cliente, id_metodo_pago)
+VALUES ('2026-11-19 08:00:00', 50000.00, 1, 1);
+
+-- 2. Insertar detalle de la venta usando el ID recien generado
+INSERT INTO detalle_venta (cantidad, precio_unitario_venta, id_venta, id_producto)
+VALUES (2.00, 25000.00, LAST_INSERT_ID(), 1);
+
+-- 3. Descontar el inventario del producto vendido
+UPDATE producto
+SET cantidad_stock = cantidad_stock - 2.00
+WHERE id_producto = 1;
+
+COMMIT;
+
+USE ferreteria;
+BEGIN;
+
+INSERT INTO venta (fecha, total_venta, id_cliente, id_metodo_pago)
+VALUES ('2026-11-19 08:15:00', 36000.00, 3, 2);
+
+UPDATE producto
+SET cantidad_stock = cantidad_stock - 1.00
+WHERE id_producto = 13;
+
+-- Se cancela la operacion: nada se guarda en la base de datos
+ROLLBACK;
