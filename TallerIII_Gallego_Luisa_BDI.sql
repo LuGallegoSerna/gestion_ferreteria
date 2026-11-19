@@ -517,3 +517,17 @@ WHERE NOT EXISTS (
     FROM detalle_venta dv
     WHERE dv.id_venta = v.id_venta
 );
+
+USE ferreteria;
+SELECT DISTINCT c.id_cliente, c.nombre AS cliente, p.nombre AS producto_mas_caro, dv.precio_unitario_venta
+FROM cliente c
+INNER JOIN venta v ON c.id_cliente = v.id_cliente
+INNER JOIN detalle_venta dv ON v.id_venta = dv.id_venta
+INNER JOIN producto p ON dv.id_producto = p.id_producto
+WHERE dv.precio_unitario_venta = (
+    SELECT MAX(dv2.precio_unitario_venta)
+    FROM venta v2
+    INNER JOIN detalle_venta dv2 ON v2.id_venta = dv2.id_venta
+    WHERE v2.id_cliente = c.id_cliente
+)
+ORDER BY dv.precio_unitario_venta DESC;
